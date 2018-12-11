@@ -74,18 +74,18 @@
   • left-curly is `from`
   • The ~ next to left-curly causes the arguments to it to be flipped.
 
-  The J solution does (1) the running sum of 1e6 repetitions of the
-  numbers, then in a single composite verb (2) assigns 0's to all the
-  duplicate running sums (and 1's to rest), then (3) switches (via
-  NOT) that so that duplicates are 1 and non-duplicates are 0,
-  then (4) gets the indices of all the 1's within that sequence using
-  I., then (5) takes the first of those indices. That
+  The J solution does (1) the running sum of 1e6 of cycled `nums`,
+  then in a single composite verb (2) assigns 0's to all the duplicate
+  running sums (and 1's to rest), then (3) switches (via NOT) that so
+  that duplicates are 1 and non-duplicates are 0, then (4) gets the
+  indices of all the 1's within that sequence using I., then (5) takes
+  the first of those indices. That
   index-of-the-first-duplicate-running-sum is then (6) passed as the
   first (left) argument to `from`, and the original sequence of
   running sums is the right argument.
 
   For the input in this repo, that is the running sum at index
-  141,669, hence the need for 1e6 repetitions of the original sequence
+  141,669, hence the need for enough cycles of the original sequence
   to reach that repetition."
   [nums]
   (let [all-sums  ((prefix (over +)) (take 150000 (cycle nums)))
