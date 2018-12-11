@@ -4,7 +4,7 @@
   (:require [clojure.string :as str]
             [com.semperos.rankle
              :as r
-             :refer [from in indices not nub-sieve over prefix rot + =]]
+             :refer [fork from in indices not nub-sieve over prefix reflex rot + =]]
             [com.semperos.rankle.example.aoc2018.util :as util]
             [criterium.core :as crit]))
 
@@ -46,7 +46,8 @@
    (reductions + 0 (cycle nums))))
 
 (defn solve-b-rankle-translation
-  "This is a direct translation of the Clojure approach above."
+  "This is a direct translation of the Clojure approach above, simply
+  using `over` and `prefix` for `reduce` and `reductions`."
   [nums]
   ((over
     (fn [seen n]
@@ -61,8 +62,8 @@
 
   ({~[:{.@I.-.@~:) +/\\ 1e6 $ nums
 
-  • 1e6 because there isn't a lazy `cycle` in J and we don't reach a repetition
-    any earlier.
+  • 1e6 because there isn't a lazy `cycle` in J. Could use smaller number,
+    but doesn't make meaningful change to J's performance here (fast).
   • The @ symbol is call \"atop\", used for verb composition.
   • Monadic ~: is the nub sieve (1 for each item when first encountered
     left-to-right, 0 on each subsequent encounter)
@@ -85,15 +86,17 @@
 
   For the input in this repo, that is the running sum at index
   141,669, hence the need for 1e6 repetitions of the original sequence
-  to reach that repetition.
-  "
+  to reach that repetition."
   [nums]
-  ;; ({~[:{.@I.-.@~:) +/\\ 1e6 $ nums
-  (let [all-sums ((prefix (over +)) (take 150000 (cycle nums)))
-        uniqs (nub-sieve all-sums)
-        dupes (not uniqs)
-        dupe-idxs (indices dupes)]
-    (from (first dupe-idxs) all-sums)))
+  (let [all-sums  ((prefix (over +)) (take 150000 (cycle nums)))
+        ;; uniqs     (nub-sieve all-sums)
+        ;; dupes     (not uniqs)
+        ;; dupe-idxs (indices dupes)
+        find-dupe (comp first indices not nub-sieve)
+        solution  (fork from find-dupe identity)]
+    (solution all-sums)))
+
+
 
 (comment
   (require 'com.semperos.rankle :reload-all)
